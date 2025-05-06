@@ -60,6 +60,9 @@ func newReqBatCmd() *cobra.Command {
 // If execution fails, a wrapped error is returned with context information.
 func runBatchRequest(opts *batchOptions, args []string) error {
 	configPath := args[0]
+	if configPath == "" {
+		return errors.ErrCLIInput
+	}
 
 	// Use common config loading function
 	config, err := LoadAndValidateConfig(configPath)
@@ -112,7 +115,7 @@ func runBatchRequest(opts *batchOptions, args []string) error {
 	if err != nil {
 		wrappedErr := errors.WrapError(err, "failed to execute batch requests")
 		format.PrintError(wrappedErr)
-		return wrappedErr
+		return nil
 	}
 
 	return nil

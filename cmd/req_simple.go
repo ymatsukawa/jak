@@ -81,10 +81,13 @@ func newReqSimpleCmd() *cobra.Command {
 // If execution fails, a wrapped error is returned with context information.
 func runSimpleRequest(opts *simpleOptions, args []string) error {
 	method, urlStr := args[0], args[1]
+	if method == "" || urlStr == "" {
+		return errors.ErrCLIInput
+	}
 
 	if err := validateURL(urlStr); err != nil {
 		format.PrintError(err)
-		return err
+		return nil
 	}
 
 	// Create context with timeout
@@ -116,7 +119,7 @@ func runSimpleRequest(opts *simpleOptions, args []string) error {
 		wrappedErr := errors.WrapError(err, "failed to execute simple request")
 		format.PrintError(wrappedErr)
 		format.PrintRequestResult(result)
-		return wrappedErr
+		return nil
 	}
 
 	// Update status code in result

@@ -7,6 +7,7 @@ import (
 
 // Common errors shared across packages
 var (
+	ErrCLIInput           = errors.New("invalid CLI input")
 	ErrInvalidURL         = errors.New("invalid URL")
 	ErrInvalidConfig      = errors.New("configuration is not loadable")
 	ErrConfigValidation   = errors.New("configuration validation failed")

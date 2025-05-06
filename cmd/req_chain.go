@@ -64,11 +64,14 @@ func newReqChainCmd() *cobra.Command {
 // If execution fails, a wrapped error is returned with context information.
 func runChainRequest(opts *chainOptions, args []string) error {
 	configPath := args[0]
+	if configPath == "" {
+		return errors.ErrCLIInput
+	}
 
 	config, err := LoadAndValidateConfig(configPath)
 	if err != nil {
 		format.PrintError(err)
-		return err
+		return nil
 	}
 
 	// Create context with timeout
@@ -123,7 +126,7 @@ func runChainRequest(opts *chainOptions, args []string) error {
 	if err != nil {
 		wrappedErr := errors.WrapError(err, "failed to execute chain requests")
 		format.PrintError(wrappedErr)
-		return wrappedErr
+		return nil
 	}
 
 	return nil
