@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/ymatsukawa/jak/internal/engine"
-	"github.com/ymatsukawa/jak/internal/errors"
 	"github.com/ymatsukawa/jak/internal/format"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // simpleOptions holds configuration options for simple request command.
@@ -82,7 +82,7 @@ func newReqSimpleCmd() *cobra.Command {
 func runSimpleRequest(opts *simpleOptions, args []string) error {
 	method, urlStr := args[0], args[1]
 	if method == "" || urlStr == "" {
-		return errors.ErrCLIInput
+		return se.ErrCLIInput
 	}
 
 	if err := validateURL(urlStr); err != nil {
@@ -116,7 +116,7 @@ func runSimpleRequest(opts *simpleOptions, args []string) error {
 	}
 
 	if err != nil {
-		wrappedErr := errors.WrapError(err, "failed to execute simple request")
+		wrappedErr := se.WrapError(err, "failed to execute simple request")
 		format.PrintError(wrappedErr)
 		format.PrintRequestResult(result)
 		return nil

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/ymatsukawa/jak/internal/errors"
 	"github.com/ymatsukawa/jak/internal/http"
 	"github.com/ymatsukawa/jak/internal/rule"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // Factory defines an interface for creating HTTP requests.
@@ -72,7 +72,7 @@ func NewFactory() Factory {
 func (factory *DefaultFactory) CreateSimple(url, method, header, body string) (*http.Request, error) {
 	upperMethod := strings.ToUpper(method)
 	if !http.IsValidMethod(upperMethod) {
-		return nil, fmt.Errorf("%w: %s", errors.ErrInvalidMethod, method)
+		return nil, fmt.Errorf("%w: %s", se.ErrInvalidMethod, method)
 	}
 
 	options := factory.builder.BuildFromSimple(upperMethod, header, body)
@@ -91,10 +91,10 @@ func (factory *DefaultFactory) CreateSimple(url, method, header, body string) (*
 //   - error: Any error encountered during request creation
 func (factory *DefaultFactory) CreateFromConfig(config *rule.Config, request *rule.Request) (*http.Request, error) {
 	if config == nil || request == nil {
-		return nil, fmt.Errorf("%w", errors.ErrInvalidConfig)
+		return nil, fmt.Errorf("%w", se.ErrInvalidConfig)
 	}
 	if err := config.Validate(); err != nil {
-		return nil, fmt.Errorf("%w: %s", errors.ErrConfigValidation, err)
+		return nil, fmt.Errorf("%w: %s", se.ErrConfigValidation, err)
 	}
 
 	url := config.BaseUrl + request.Path

@@ -2,6 +2,8 @@ package http
 
 import (
 	"encoding/json"
+
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // RequestBody defines an interface for handling different types of HTTP request bodies.
@@ -60,10 +62,10 @@ func (b *BaseBody) IsEmpty() bool {
 // It checks if the body content is not empty.
 //
 // Returns:
-//   - error: ErrBodyEmpty if the body is empty, nil otherwise
+//   - error: se.ErrBodyEmpty if the body is empty, nil otherwise
 func (b *BaseBody) validateBase() error {
 	if b.BodyContent == "" {
-		return ErrBodyEmpty
+		return se.ErrBodyEmpty
 	}
 	return nil
 }
@@ -111,13 +113,13 @@ func (b *RawBody) IsEmpty() bool {
 // A valid raw body has non-empty content and a specified content type.
 //
 // Returns:
-//   - error: Error if validation fails, nil otherwise
+//   - error: se.Error if validation fails, nil otherwise
 func (b *RawBody) Validate() error {
 	if err := b.validateBase(); err != nil {
 		return err
 	}
 	if b.Type == "" {
-		return ErrContentTypeEmpty
+		return se.ErrContentTypeEmpty
 	}
 
 	return nil
@@ -154,7 +156,7 @@ func (b *FormBody) ContentType() string {
 // A valid form body has non-empty content.
 //
 // Returns:
-//   - error: Error if validation fails, nil otherwise
+//   - error: se.Error if validation fails, nil otherwise
 func (b *FormBody) Validate() error {
 	return b.validateBase()
 }
@@ -190,13 +192,13 @@ func (b *JsonBody) ContentType() string {
 // A valid JSON body has non-empty content and is parseable as JSON.
 //
 // Returns:
-//   - error: Error if validation fails, nil otherwise
+//   - error: se.Error if validation fails, nil otherwise
 func (b *JsonBody) Validate() error {
 	if err := b.validateBase(); err != nil {
 		return err
 	}
 	if !json.Valid([]byte(b.BodyContent)) {
-		return ErrInvalidJSONFormat
+		return se.ErrInvalidJSONFormat
 	}
 
 	return nil

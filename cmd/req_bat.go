@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/ymatsukawa/jak/internal/engine"
-	"github.com/ymatsukawa/jak/internal/errors"
 	"github.com/ymatsukawa/jak/internal/format"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // batchOptions holds configuration options specific to batch request command.
@@ -61,7 +61,7 @@ func newReqBatCmd() *cobra.Command {
 func runBatchRequest(opts *batchOptions, args []string) error {
 	configPath := args[0]
 	if configPath == "" {
-		return errors.ErrCLIInput
+		return se.ErrCLIInput
 	}
 
 	// Use common config loading function
@@ -113,7 +113,7 @@ func runBatchRequest(opts *batchOptions, args []string) error {
 	format.PrintBatchSummary(results)
 
 	if err != nil {
-		wrappedErr := errors.WrapError(err, "failed to execute batch requests")
+		wrappedErr := se.WrapError(err, "failed to execute batch requests")
 		format.PrintError(wrappedErr)
 		return nil
 	}

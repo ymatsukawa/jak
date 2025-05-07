@@ -6,6 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/ymatsukawa/jak/internal/rule"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 func TestNewDependencyResolver(t *testing.T) {
@@ -50,7 +51,7 @@ func TestBuildRequestGraph(t *testing.T) {
 					{Name: "req1", DependsOn: "nop"},
 				},
 			},
-			expectErr: ErrUnknownDependency,
+			expectErr: se.ErrUnknownDependency,
 		},
 		{
 			name: "cyclic dependency",
@@ -60,7 +61,7 @@ func TestBuildRequestGraph(t *testing.T) {
 					{Name: "req2", DependsOn: "req1"},
 				},
 			},
-			expectErr: ErrCyclicDependency,
+			expectErr: se.ErrCyclicDependency,
 		},
 	}
 
@@ -167,7 +168,7 @@ func TestUnstable_CalculateExecutionOrder(t *testing.T) {
 				},
 			},
 			expectOrder: nil,
-			expectErr:   ErrCyclicDependency,
+			expectErr:   se.ErrCyclicDependency,
 		},
 	}
 

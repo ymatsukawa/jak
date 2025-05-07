@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ymatsukawa/jak/internal/rule"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // DependencyResolver is responsible for analyzing and resolving dependencies between requests.
@@ -75,7 +76,7 @@ func (dr *DependencyResolver) buildDependencyMaps(ctx context.Context, config *r
 			// Verify the dependency exists
 			if _, exists := dr.requests[req.DependsOn]; !exists {
 				return fmt.Errorf("request '%s' depends on unknown request '%s': %w",
-					req.Name, req.DependsOn, ErrUnknownDependency)
+					req.Name, req.DependsOn, se.ErrUnknownDependency)
 			}
 
 			// Record the dependency relationships in both maps
@@ -108,7 +109,7 @@ func (dr *DependencyResolver) detectCycles(ctx context.Context) error {
 	for name := range dr.requests {
 		visited := make(map[string]bool)
 		if dr.hasCycle(name, visited) {
-			return fmt.Errorf("cyclic dependency detected with request '%s': %w", name, ErrCyclicDependency)
+			return fmt.Errorf("cyclic dependency detected with request '%s': %w", name, se.ErrCyclicDependency)
 		}
 	}
 
@@ -177,7 +178,7 @@ func (dr *DependencyResolver) CalculateExecutionOrder(ctx context.Context) ([]st
 	visit = func(name string) error {
 		// Check if we're revisiting a node in the current traversal path (cycle)
 		if visiting[name] {
-			return fmt.Errorf("cyclic dependency detected with request '%s': %w", name, ErrCyclicDependency)
+			return fmt.Errorf("cyclic dependency detected with request '%s': %w", name, se.ErrCyclicDependency)
 		}
 
 		// Skip if already processed
