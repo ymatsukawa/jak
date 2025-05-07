@@ -1,10 +1,9 @@
-package chain
+package sys_error
 
 import (
 	"errors"
 )
 
-// Chain specific errors
 var (
 	// Dependency related errors
 	ErrUnknownDependency = errors.New("unknown dependency")

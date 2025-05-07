@@ -5,6 +5,8 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // DefaultTimeout is the default timeout for HTTP requests.
@@ -115,7 +117,7 @@ func (client *DefaultClient) Do(req *Request) (*Response, error) {
 	// Create standard HTTP request
 	httpReq, err := http.NewRequest(method, url, body)
 	if err != nil {
-		return nil, ErrRequestCreation
+		return nil, se.ErrRequestCreation
 	}
 
 	// Set context if available
@@ -179,7 +181,7 @@ func (client *DefaultClient) doRequest(req *http.Request) (*Response, error) {
 	// Read response body
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, ErrResponseReadFailed
+		return nil, se.ErrResponseReadFailed
 	}
 
 	// Create reusable body reader

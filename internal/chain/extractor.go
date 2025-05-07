@@ -8,6 +8,7 @@ import (
 
 	"github.com/tidwall/gjson"
 	"github.com/ymatsukawa/jak/internal/http"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // JSONExtractor defines an interface for extracting values from JSON data.
@@ -92,7 +93,7 @@ func (ve *variableExtractor) ExtractVariables(
 	}
 
 	if resp == nil {
-		return nil, ErrNilResponse
+		return nil, se.ErrNilResponse
 	}
 
 	body, err := ve.readResponseBody(resp)
@@ -112,7 +113,7 @@ func (ve *variableExtractor) ExtractVariables(
 
 		value, exists := ve.jsonExtractor.Extract(jsonString, jsonPath)
 		if !exists {
-			return nil, fmt.Errorf("path '%s' not found for variable '%s': %w", jsonPath, variableName, ErrPathNotFound)
+			return nil, fmt.Errorf("path '%s' not found for variable '%s': %w", jsonPath, variableName, se.ErrPathNotFound)
 		}
 		variables[variableName] = value
 	}
@@ -131,7 +132,7 @@ func (ve *variableExtractor) ExtractVariables(
 //   - error: Any error encountered during reading
 func (ve *variableExtractor) readResponseBody(resp *http.Response) ([]byte, error) {
 	if resp == nil || resp.Body == nil {
-		return nil, ErrNilResponse
+		return nil, se.ErrNilResponse
 	}
 
 	defer resp.Body.Close()
@@ -140,14 +141,14 @@ func (ve *variableExtractor) readResponseBody(resp *http.Response) ([]byte, erro
 	limitReader := io.LimitReader(resp.Body, maxResponseBodySize)
 	body, err := io.ReadAll(limitReader)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read response body: %w", ErrReadResponseBody)
+		return nil, fmt.Errorf("failed to read response body: %w", se.ErrReadResponseBody)
 	}
 
 	// Check if there's more data (indicating the body is too large)
 	extraByte := make([]byte, 1)
 	n, _ := resp.Body.Read(extraByte)
 	if n > 0 {
-		return nil, ErrResponseTooLarge
+		return nil, se.ErrResponseTooLarge
 	}
 
 	// Reset the body for further use

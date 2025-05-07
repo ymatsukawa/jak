@@ -1,10 +1,9 @@
 package format
 
 import (
-	"errors"
 	"strings"
 
-	je "github.com/ymatsukawa/jak/internal/errors"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // FormatError formats an error for display with context and help message
@@ -19,29 +18,32 @@ func FormatError(err error) string {
 	divider := strings.Repeat("─", 50)
 	buffer.WriteString(ColorizeError(divider) + "\n")
 
-	// Error title and message
+	// se.Error title and message
 	buffer.WriteString(ColorizeError("ERROR: ") + err.Error() + "\n\n")
 
 	// Add helpful context based on error type
 	var helpMsg string
-	if errors.Is(err, je.ErrInvalidURL) {
-		helpMsg = "The URL format is invalid. Make sure it includes scheme (http:// or https://) and host."
-	} else if errors.Is(err, je.ErrInvalidMethod) {
-		helpMsg = "Invalid HTTP method. Supported methods are: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS."
-	} else if errors.Is(err, je.ErrInvalidConfig) {
-		helpMsg = "The configuration file is not valid or could not be loaded. Check the file format and permissions."
-	} else if errors.Is(err, je.ErrConfigValidation) {
-		helpMsg = "The configuration failed validation. Check that all required fields are present and correct."
-	} else if errors.Is(err, je.ErrRequestExecution) {
-		helpMsg = "Failed to execute the HTTP request. Check your network connection and the server status."
-	} else if errors.Is(err, je.ErrRequestCreation) {
-		helpMsg = "Failed to create the HTTP request. Check your request parameters."
-	} else if errors.Is(err, je.ErrInvalidHeader) {
-		helpMsg = "Invalid header format. Headers must be in the format 'Key: Value'."
-	} else if errors.Is(err, je.ErrInvalidBody) {
-		helpMsg = "Invalid request body. Check the format of your JSON, form, or raw body."
-	} else if errors.Is(err, je.ErrResponseRead) {
-		helpMsg = "Failed to read the response. The server may have returned an invalid response."
+	if sysErr, ok := err.(*se.Error); ok {
+		switch sysErr {
+		case se.ErrInvalidURL:
+			helpMsg = "The URL format is invalid. Make sure it includes scheme (http:// or https://) and host."
+		case se.ErrInvalidMethod:
+			helpMsg = "Invalid HTTP method. Supported methods are: GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS."
+		case se.ErrInvalidConfig:
+			helpMsg = "The configuration file is not valid or could not be loaded. Check the file format and permissions."
+		case se.ErrConfigValidation:
+			helpMsg = "The configuration failed validation. Check that all required fields are present and correct."
+		case se.ErrRequestExecution:
+			helpMsg = "Failed to execute the HTTP request. Check your network connection and the server status."
+		case se.ErrRequestCreation:
+			helpMsg = "Failed to create the HTTP request. Check your request parameters."
+		case se.ErrInvalidHeader:
+			helpMsg = "Invalid header format. Headers must be in the format 'Key: Value'."
+		case se.ErrInvalidBody:
+			helpMsg = "Invalid request body. Check the format of your JSON, form, or raw body."
+		case se.ErrResponseRead:
+			helpMsg = "Failed to read the response. The server may have returned an invalid response."
+		}
 	}
 
 	if helpMsg != "" {
@@ -71,7 +73,7 @@ func FormatCommandError(cmdName string, err error) string {
 	divider := strings.Repeat("─", 50)
 	buffer.WriteString(ColorizeError(divider) + "\n")
 
-	// Error message
+	// se.Error message
 	buffer.WriteString(ColorizeError("COMMAND ERROR: ") + err.Error() + "\n\n")
 
 	// Add usage help

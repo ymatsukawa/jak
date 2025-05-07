@@ -18,7 +18,7 @@ type RequestHeaders interface {
 	//   - value: Header value
 	//
 	// Returns:
-	//   - error: ErrHeaderEmpty if key is empty, nil otherwise
+	//   - error: se.ErrHeaderEmpty if key is empty, nil otherwise
 	Add(key, value string) error
 
 	// Set sets a header value, overwriting any existing value.
@@ -29,7 +29,7 @@ type RequestHeaders interface {
 	//   - value: Header value
 	//
 	// Returns:
-	//   - error: ErrHeaderEmpty if key is empty, nil otherwise
+	//   - error: se.ErrHeaderEmpty if key is empty, nil otherwise
 	Set(key, value string) error
 
 	// Get retrieves a header value by key.
@@ -87,7 +87,7 @@ func NewBaseHeaders() *BaseHeaders {
 //
 // Returns:
 //   - *BaseHeaders: Initialized headers container
-//   - error: ErrHeaderInvalid if any header has invalid format
+//   - error: se.ErrHeaderInvalid if any header has invalid format
 func NewFromStringHeaders(headers []string) (*BaseHeaders, error) {
 	sh := NewBaseHeaders()
 
@@ -113,7 +113,7 @@ func NewFromStringHeaders(headers []string) (*BaseHeaders, error) {
 //   - value: Header value
 //
 // Returns:
-//   - error: ErrHeaderEmpty if key is empty, nil otherwise
+//   - error: se.ErrHeaderEmpty if key is empty, nil otherwise
 func (h *BaseHeaders) Add(key, val string) error {
 	k, v := strings.TrimSpace(key), strings.TrimSpace(val)
 	if k == "" {
@@ -132,7 +132,7 @@ func (h *BaseHeaders) Add(key, val string) error {
 //   - value: Header value
 //
 // Returns:
-//   - error: ErrHeaderEmpty if key is empty, nil otherwise
+//   - error: se.ErrHeaderEmpty if key is empty, nil otherwise
 func (h *BaseHeaders) Set(key, val string) error {
 	k, v := strings.TrimSpace(key), strings.TrimSpace(val)
 	if k == "" {
@@ -171,7 +171,7 @@ func (h *BaseHeaders) Apply(req *http.Request) {
 // Returns:
 //   - bool: True if no headers exist, false otherwise
 func (h *BaseHeaders) IsEmpty() bool {
-	return h.Headers == nil || len(h.Headers) == 0
+	return len(h.Headers) == 0
 }
 
 // GetAllHeaders returns a copy of all headers as a map.

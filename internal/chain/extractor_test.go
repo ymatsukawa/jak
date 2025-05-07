@@ -8,6 +8,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/ymatsukawa/jak/internal/http"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 func TestGJSONExtractor_Extract(t *testing.T) {
@@ -118,7 +119,7 @@ func TestExtractVariables(t *testing.T) {
 		{
 			name:      "nil response returns error",
 			response:  nil,
-			expectErr: ErrNilResponse,
+			expectErr: se.ErrNilResponse,
 		},
 		{
 			name: "successfully extracts variables",
@@ -143,7 +144,7 @@ func TestExtractVariables(t *testing.T) {
 			extractions: map[string]string{
 				"notFound": "invalid.path",
 			},
-			expectErr: ErrPathNotFound,
+			expectErr: se.ErrPathNotFound,
 		},
 		{
 			name: "successfully extracts nested variables",

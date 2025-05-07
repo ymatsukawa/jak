@@ -1,10 +1,7 @@
-package http
+package sys_error
 
-import (
-	"errors"
-)
+import "errors"
 
-// HTTP specific errors
 var (
 	ErrInvalidMethod      = errors.New("invalid HTTP method")
 	ErrHeaderEmpty        = errors.New("header key cannot be empty")

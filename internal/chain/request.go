@@ -7,6 +7,7 @@ import (
 	"github.com/ymatsukawa/jak/internal/engine"
 	"github.com/ymatsukawa/jak/internal/http"
 	"github.com/ymatsukawa/jak/internal/rule"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // ExecutionResult contains the result of a request execution.
@@ -116,7 +117,7 @@ func (processor *DefaultRequestProcessor) ProcessRequest(
 	if len(preparedRequest.Extract) > 0 {
 		extractedVars, err := processor.variableExtractor.ExtractVariables(ctx, response, preparedRequest.Extract)
 		if err != nil {
-			return nil, fmt.Errorf("failed to extract variables: %w", ErrVariableExtraction)
+			return nil, fmt.Errorf("failed to extract variables: %w", se.ErrVariableExtraction)
 		}
 
 		// Store extracted variables
@@ -213,7 +214,7 @@ func (processor *DefaultRequestProcessor) executeRequest(
 	// Create HTTP request
 	httpReq, err := processor.factory.CreateFromConfig(config, req)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create request: %w", ErrCreateRequest)
+		return nil, fmt.Errorf("failed to create request: %w", se.ErrCreateRequest)
 	}
 
 	// Set request context
@@ -222,7 +223,7 @@ func (processor *DefaultRequestProcessor) executeRequest(
 	// Execute request
 	resp, err := processor.client.Do(httpReq)
 	if err != nil {
-		return nil, fmt.Errorf("request execution failed: %w", ErrRequestExecution)
+		return nil, fmt.Errorf("request execution failed: %w", se.ErrRequestExecution)
 	}
 
 	return resp, nil

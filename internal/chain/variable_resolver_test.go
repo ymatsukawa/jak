@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 func TestVariableResolver(t *testing.T) {
@@ -87,7 +88,7 @@ func TestSetEmptyVariableName(t *testing.T) {
 	err := resolver.Set("", "value")
 
 	assert.Error(t, err)
-	assert.Equal(t, ErrEmptyVariableName, err)
+	assert.Equal(t, se.ErrEmptyVariableName, err)
 }
 
 func TestGetVariable(t *testing.T) {

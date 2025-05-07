@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/ymatsukawa/jak/internal/errors"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // validateURL ensures the provided URL has a valid scheme and host.
@@ -26,12 +26,12 @@ import (
 func validateURL(urlStr string) error {
 	parsedURL, err := url.Parse(urlStr)
 	if err != nil {
-		return errors.WrapError(err, "invalid URL format")
+		return se.WrapError(err, "invalid URL format")
 	}
 
 	if parsedURL.Scheme == "" || parsedURL.Host == "" {
 		return fmt.Errorf("%w: URL must include scheme and host: %s",
-			errors.ErrInvalidURL, urlStr)
+			se.ErrInvalidURL, urlStr)
 	}
 
 	return nil

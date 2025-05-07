@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ymatsukawa/jak/internal/errors"
 	"github.com/ymatsukawa/jak/internal/http"
 	"github.com/ymatsukawa/jak/internal/rule"
+	"github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // DefaultMaxWorkers defines the maximum number of concurrent workers
@@ -113,7 +113,7 @@ func (executor *Executor) ExecuteSimple(url, method, header, body string) (*http
 	// Create request
 	req, err := executor.factory.CreateSimple(url, method, header, body)
 	if err != nil {
-		return nil, errors.WrapError(err, "failed to create request")
+		return nil, sys_error.WrapError(err, "failed to create request")
 	}
 
 	// Start timing
@@ -179,7 +179,7 @@ func (executor *Executor) ExecuteBatchSequential(config *rule.Config) error {
 				if config.IgnoreFail {
 					continue
 				}
-				return errors.WrapError(err, "batch request failed")
+				return sys_error.WrapError(err, "batch request failed")
 			} else {
 				fmt.Printf("Request '%s' succeeded: %d\n", req.Name, resp.StatusCode)
 			}
@@ -310,7 +310,7 @@ func (executor *Executor) worker(
 			if err != nil {
 				if !config.IgnoreFail {
 					select {
-					case errCh <- errors.WrapError(err, "batch request failed"):
+					case errCh <- sys_error.WrapError(err, "batch request failed"):
 						// Error sent
 					default:
 						// Error channel full, continue
@@ -334,7 +334,7 @@ func (executor *Executor) worker(
 func (executor *Executor) executeConfigRequest(config *rule.Config, req *rule.Request) (*http.Response, error) {
 	httpReq, err := executor.factory.CreateFromConfig(config, req)
 	if err != nil {
-		return nil, errors.WrapError(err, "failed to prepare request")
+		return nil, sys_error.WrapError(err, "failed to prepare request")
 	}
 
 	return executor.executeHttpRequest(httpReq)
@@ -355,7 +355,7 @@ func (executor *Executor) executeHttpRequest(req *http.Request) (*http.Response,
 
 	resp, err := executor.client.Do(req)
 	if err != nil {
-		return nil, errors.WrapError(err, "request execution failed")
+		return nil, sys_error.WrapError(err, "request execution failed")
 	}
 
 	return resp, nil

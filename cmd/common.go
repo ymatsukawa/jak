@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/ymatsukawa/jak/internal/errors"
 	"github.com/ymatsukawa/jak/internal/rule"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // LoadAndValidateConfig loads configuration from the specified path and validates it.
@@ -27,11 +27,11 @@ import (
 func LoadAndValidateConfig(configPath string) (*rule.Config, error) {
 	config, err := rule.LoadConfig(configPath)
 	if err != nil {
-		return nil, errors.WrapError(err, "failed to load config")
+		return nil, se.WrapError(err, "failed to load config")
 	}
 
 	if err := config.Validate(); err != nil {
-		return nil, errors.WrapError(err, "invalid config")
+		return nil, se.WrapError(err, "invalid config")
 	}
 
 	return config, nil

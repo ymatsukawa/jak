@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/ymatsukawa/jak/internal/chain"
-	"github.com/ymatsukawa/jak/internal/errors"
 	"github.com/ymatsukawa/jak/internal/format"
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 )
 
 // chainOptions holds configuration options specific to chain request command.
@@ -65,7 +65,7 @@ func newReqChainCmd() *cobra.Command {
 func runChainRequest(opts *chainOptions, args []string) error {
 	configPath := args[0]
 	if configPath == "" {
-		return errors.ErrCLIInput
+		return se.ErrCLIInput
 	}
 
 	config, err := LoadAndValidateConfig(configPath)
@@ -124,7 +124,7 @@ func runChainRequest(opts *chainOptions, args []string) error {
 	format.PrintBatchSummary(results)
 
 	if err != nil {
-		wrappedErr := errors.WrapError(err, "failed to execute chain requests")
+		wrappedErr := se.WrapError(err, "failed to execute chain requests")
 		format.PrintError(wrappedErr)
 		return nil
 	}

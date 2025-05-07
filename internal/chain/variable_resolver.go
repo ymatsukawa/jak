@@ -1,6 +1,7 @@
 package chain
 
 import (
+	se "github.com/ymatsukawa/jak/internal/sys_error"
 	"regexp"
 )
 
@@ -89,10 +90,10 @@ func NewVariableResolver() *DefaultVariableResolver {
 //   - value: Value to assign to the variable
 //
 // Returns:
-//   - error: ErrEmptyVariableName if name is empty, nil otherwise
+//   - error: se.ErrEmptyVariableName if name is empty, nil otherwise
 func (r *DefaultVariableResolver) Set(name, value string) error {
 	if name == "" {
-		return ErrEmptyVariableName
+		return se.ErrEmptyVariableName
 	}
 	r.values[name] = value
 	return nil
@@ -185,10 +186,10 @@ func (r *DefaultVariableResolver) ResolveBody(body *string) *string {
 //
 // Returns:
 //   - string: String with variable references replaced
-//   - error: ErrMaxRecursionDepth if maximum depth is exceeded
+//   - error: se.ErrMaxRecursionDepth if maximum depth is exceeded
 func (r *DefaultVariableResolver) resolveRecursively(input string, depth int) (string, error) {
 	if depth >= maxVariableRecursionDepth {
-		return input, ErrMaxRecursionDepth
+		return input, se.ErrMaxRecursionDepth
 	}
 
 	result := r.variablePattern.ReplaceAllStringFunc(input, func(match string) string {
