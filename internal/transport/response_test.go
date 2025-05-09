@@ -1,4 +1,4 @@
-package http
+package transport
 
 import (
 	"net/http"
@@ -9,13 +9,13 @@ import (
 
 func TestResponse(t *testing.T) {
 	t.Run("TestResponse", func(t *testing.T) {
-		resp := &Response{
+		res := &Response{
 			Header:     make(http.Header),
 			StatusCode: 200,
 		}
-		resp.Header.Set("Content-Type", "application/json")
+		res.Header.Set("Content-Type", "application/json")
 
-		assert.Equal(t, 200, resp.StatusCode)
-		assert.Equal(t, "application/json", resp.Header.Get("Content-Type"))
+		assert.Equal(t, 200, res.StatusCode)
+		assert.Equal(t, "application/json", res.Header.Get("Content-Type"))
 	})
 }
