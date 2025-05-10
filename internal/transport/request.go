@@ -12,9 +12,10 @@ type Request interface {
 	GetContentLength() int
 	GetHeaders() Headers
 	GetContext() *context.Context
-	WithContext(ctx context.Context) *Request
+
 	WithHeaders(headers Headers) *Request
 	WithBody(body RequestBody) *Request
+	WithContext(ctx context.Context) *Request
 }
 
 type BaseRequest struct {

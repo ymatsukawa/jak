@@ -138,3 +138,19 @@ func validateBasicBody(content, contentType string) error {
 
 	return nil
 }
+
+func SpecifyBodyType(body string) string {
+	if body == "" {
+		return ContentTypePlainText
+	}
+
+	if json.Valid([]byte(body)) {
+		return ContentTypeJSON
+	}
+
+	if isValidURLEncoded(body) {
+		return ContentTypeFormURLEncoded
+	}
+
+	return ContentTypePlainText
+}
